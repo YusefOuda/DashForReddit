@@ -12,5 +12,6 @@ namespace DashForReddit.ViewModels
         public string Author { get; set; }
         public int Ups { get; set; }
         public string Subreddit { get; set; }
+        public string Name { get; set; }
     }
 }

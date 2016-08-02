@@ -14,7 +14,7 @@ namespace DashForReddit.Reddit
     {
         private static string client_id = "BOiQ4k3IpBQqCw";
         private static string base_url = "https://oauth.reddit.com/";
-        public async static Task<Tuple<string, int>> getToken()
+        private async static Task<Tuple<string, int>> getToken()
         {
             var uri = new Uri("https://www.reddit.com/api/v1/access_token");
             var deviceId = Windows.Storage.ApplicationData.Current.LocalSettings.Values["deviceid"];
@@ -33,9 +33,37 @@ namespace DashForReddit.Reddit
             }
         }
 
-        public async static void getAll(ObservableCollection<Post> posts)
+        private async static Task<bool> ensureTokenExists()
         {
-            var uri = new Uri(base_url);
+            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            DateTime expiration;
+            Tuple<string, int> tokenResponse;
+            if (string.IsNullOrWhiteSpace((string)localSettings.Values["access_token"]))
+            {
+                tokenResponse = await getToken();
+                localSettings.Values["access_token"] = tokenResponse.Item1;
+                localSettings.Values["access_token_expiration"] = DateTime.Now.AddSeconds(tokenResponse.Item2).ToString();
+            }
+            else if (localSettings.Values["access_token_expiration"] != null && DateTime.TryParse((string)localSettings.Values["access_token_expiration"], out expiration))
+            {
+                if (expiration < DateTime.Now.AddSeconds(-60))
+                {
+                    tokenResponse = await getToken();
+                    localSettings.Values["access_token"] = tokenResponse.Item1;
+                    localSettings.Values["access_token_expiration"] = DateTime.Now.AddSeconds(tokenResponse.Item2).ToString();
+                }
+            }
+
+            return true;
+        }
+
+        public async static void getAll(ObservableCollection<Post> posts, string after = null)
+        {
+            await ensureTokenExists();
+            var url = base_url;
+            if (!string.IsNullOrWhiteSpace(after))
+                url = $"{url}/?after={after}";
+            var uri = new Uri(url);
             using (var cli = new HttpClient())
             {
                 var token = Windows.Storage.ApplicationData.Current.LocalSettings.Values["access_token"];
@@ -53,7 +81,8 @@ namespace DashForReddit.Reddit
                         Title = post.data.title,
                         Author = post.data.author,
                         Ups = post.data.ups,
-                        Subreddit = $"/r/{post.data.subreddit}"
+                        Subreddit = $"/r/{post.data.subreddit}",
+                        Name = post.data.name
                     });
                 }
             }

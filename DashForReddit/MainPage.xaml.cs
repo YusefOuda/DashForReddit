@@ -33,27 +33,6 @@ namespace DashForReddit
             Posts = new ObservableCollection<Post>();
         }
 
-        private async void Page_Loading(FrameworkElement sender, object args)
-        {
-            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            DateTime expiration;
-            if (string.IsNullOrWhiteSpace((string)localSettings.Values["access_token"]))
-            {
-                var tokenResponse = await Reddit.Reddit.getToken();
-                localSettings.Values["access_token"] = tokenResponse.Item1;
-                localSettings.Values["access_token_expiration"] = DateTime.Now.AddSeconds(tokenResponse.Item2).ToString();
-            }
-            else if (localSettings.Values["access_token_expiration"] != null && DateTime.TryParse((string)localSettings.Values["access_token_expiration"], out expiration))
-            {
-                if (expiration < DateTime.Now.AddSeconds(-60))
-                {
-                    var tokenResponse = await Reddit.Reddit.getToken();
-                    localSettings.Values["access_token"] = tokenResponse.Item1;
-                    localSettings.Values["access_token_expiration"] = DateTime.Now.AddSeconds(tokenResponse.Item2).ToString();
-                }
-            }
-        }
-
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             Reddit.Reddit.getAll(Posts);
@@ -68,6 +47,17 @@ namespace DashForReddit
         {
             //var post = (Post)e.OriginalSource;
             //navigate to post details
+        }
+
+        private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            var verticalOffsetValue = PostScrollViewer.VerticalOffset;
+            var maxVerticalOffsetValue = PostScrollViewer.ExtentHeight - PostScrollViewer.ViewportHeight;
+            if (maxVerticalOffsetValue < 0 || verticalOffsetValue == maxVerticalOffsetValue)
+            {
+                // Scrolled to bottom
+                Reddit.Reddit.getAll(Posts, Posts.Last().Name);
+            }
         }
     }
 }
