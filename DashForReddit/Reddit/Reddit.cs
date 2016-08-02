@@ -46,7 +46,7 @@ namespace DashForReddit.Reddit
             }
             else if (localSettings.Values["access_token_expiration"] != null && DateTime.TryParse((string)localSettings.Values["access_token_expiration"], out expiration))
             {
-                if (expiration < DateTime.Now.AddSeconds(-60))
+                if (expiration < DateTime.Now.AddSeconds(-120))
                 {
                     tokenResponse = await getToken();
                     localSettings.Values["access_token"] = tokenResponse.Item1;
@@ -59,7 +59,7 @@ namespace DashForReddit.Reddit
 
         public async static void getAll(ObservableCollection<Post> posts, string after = null)
         {
-            await ensureTokenExists();
+            var x = await ensureTokenExists();
             var url = base_url;
             if (!string.IsNullOrWhiteSpace(after))
                 url = $"{url}/?after={after}";
@@ -82,7 +82,8 @@ namespace DashForReddit.Reddit
                         Author = post.data.author,
                         Ups = post.data.ups,
                         Subreddit = $"/r/{post.data.subreddit}",
-                        Name = post.data.name
+                        Name = post.data.name,
+                        URL = post.data.url
                     });
                 }
             }

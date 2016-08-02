@@ -11,34 +11,26 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.Web.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
-using DashForReddit.ViewModels;
+using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace DashForReddit
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class PostDetail : Page
     {
-        public MainPage()
+        public PostDetail()
         {
             this.InitializeComponent();
         }
 
-        private void HamburgerButton_Click(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            NavPane.IsPaneOpen = !NavPane.IsPaneOpen;
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            ContentFrame.Navigate(typeof(PostList));
+            var url = (string)e.Parameter;
+            Webtest.Source = new Uri(url);
         }
     }
 }
