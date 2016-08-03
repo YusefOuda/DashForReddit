@@ -25,16 +25,12 @@ namespace DashForReddit
     public sealed partial class PostList : Page
     {
         private ObservableCollection<Post> Posts { get; set; }
+        private string subreddit { get; set; }
 
         public PostList()
         {
             this.InitializeComponent();
             Posts = new ObservableCollection<Post>();
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            Reddit.Reddit.getAll(Posts);
         }
 
         private void PostListView_ItemClick(object sender, ItemClickEventArgs e)
@@ -50,8 +46,15 @@ namespace DashForReddit
             if (maxVerticalOffsetValue < 0 || verticalOffsetValue == maxVerticalOffsetValue)
             {
                 // Scrolled to bottom
-                Reddit.Reddit.getAll(Posts, Posts.Last().Name);
+                Reddit.Reddit.getAll(Posts, Posts.Last().Name, subreddit);
             }
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var sub = e.Parameter as string;
+            this.subreddit = sub;
+            Reddit.Reddit.getAll(Posts, null, sub, true);
         }
     }
 }

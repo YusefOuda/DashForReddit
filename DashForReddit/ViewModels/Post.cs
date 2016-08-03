@@ -15,4 +15,11 @@ namespace DashForReddit.ViewModels
         public string Name { get; set; }
         public string URL { get; set; }
     }
+
+    public class DefaultSubreddit
+    {
+        public string ID { get; set; }
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+    }
 }

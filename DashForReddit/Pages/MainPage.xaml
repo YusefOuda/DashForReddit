@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Loaded="Page_Loaded"
+    xmlns:vm="using:DashForReddit.ViewModels"
     mc:Ignorable="d">
     
     <Grid Background="White">
@@ -17,15 +18,16 @@
             <Button Name="HamburgerButton" Width="50" Click="HamburgerButton_Click" FontFamily="Segoe MDL2 Assets" FontSize="18" Content="&#xE700;" HorizontalAlignment="Left" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" VerticalAlignment="Stretch"></Button>
             <AutoSuggestBox PlaceholderText="Search" RelativePanel.AlignRightWithPanel="True" Width="200" QueryIcon="Find" VerticalAlignment="Top" Margin="10,10"></AutoSuggestBox>
         </RelativePanel>
-        <SplitView Name="NavPane" Grid.Row="1" CompactPaneLength="50" OpenPaneLength="150" DisplayMode="CompactOverlay">
+        <SplitView Name="NavPane" Grid.Row="1" OpenPaneLength="150" DisplayMode="Inline">
             <SplitView.Pane>
-                <ListView Name="NavListView">
-                    <ListViewItem Name="Financial">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="18" Text="&#xE770;"></TextBlock>
-                            <TextBlock FontSize="18" Text="Test123" Margin="20,0,0,0"></TextBlock>
-                        </StackPanel>
-                    </ListViewItem>
+                <ListView Name="NavListView" IsItemClickEnabled="True" ItemClick="NavListView_ItemClick" ItemsSource="{x:Bind Defaults}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:DefaultSubreddit">
+                            <StackPanel>
+                                <TextBlock Name="{x:Bind Name}" Text="{x:Bind DisplayName}" FontSize="16"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
             </SplitView.Pane>
             <SplitView.Content>

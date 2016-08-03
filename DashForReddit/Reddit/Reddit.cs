@@ -12,7 +12,7 @@ namespace DashForReddit.Reddit
 {
     class Reddit
     {
-        private static string client_id = "BOiQ4k3IpBQqCw";
+        public static string client_id = "BOiQ4k3IpBQqCw";
         private static string base_url = "https://oauth.reddit.com/";
         private async static Task<Tuple<string, int>> getToken()
         {
@@ -57,10 +57,12 @@ namespace DashForReddit.Reddit
             return true;
         }
 
-        public async static void getAll(ObservableCollection<Post> posts, string after = null)
+        public async static void getAll(ObservableCollection<Post> posts, string after = null, string subreddit = null, bool overrideColl = false)
         {
             var x = await ensureTokenExists();
             var url = base_url;
+            if (!string.IsNullOrWhiteSpace(subreddit))
+                url = $"{url}r/{subreddit}";
             if (!string.IsNullOrWhiteSpace(after))
                 url = $"{url}/?after={after}";
             var uri = new Uri(url);
@@ -74,6 +76,8 @@ namespace DashForReddit.Reddit
                     throw new Exception("Could not connect to Reddit API. Please try again.");
                 var jsonString = await resp.Content.ReadAsStringAsync();
                 var postsResponse = JsonConvert.DeserializeObject<RootObject>(jsonString);
+                if (overrideColl)
+                    posts.Clear();
                 foreach (var post in postsResponse.data.children)
                 {
                     posts.Add(new ViewModels.Post()
@@ -84,6 +88,34 @@ namespace DashForReddit.Reddit
                         Subreddit = $"/r/{post.data.subreddit}",
                         Name = post.data.name,
                         URL = post.data.url
+                    });
+                }
+            }
+        }
+
+        public async static void getDefaultList(ObservableCollection<DefaultSubreddit> defaults)
+        {
+            var uri = new Uri("https://www.reddit.com/subreddits/default.json");
+            using (var cli = new HttpClient())
+            {
+                HttpResponseMessage resp = await cli.GetAsync(uri);
+                if (!resp.IsSuccessStatusCode)
+                    throw new Exception("Could not connect to Reddit API. Please try again.");
+                var jsonString = await resp.Content.ReadAsStringAsync();
+                var postsResponse = JsonConvert.DeserializeObject<DefaultSubredditsRoot>(jsonString);
+                defaults.Add(new DefaultSubreddit()
+                {
+                    Name = "All",
+                    DisplayName = "All",
+                    ID = "All"
+                });
+                foreach (var post in postsResponse.data.children)
+                {
+                    defaults.Add(new ViewModels.DefaultSubreddit()
+                    {
+                        Name = post.data.name,
+                        DisplayName = post.data.display_name,
+                        ID = post.data.id
                     });
                 }
             }

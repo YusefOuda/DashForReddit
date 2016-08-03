@@ -32,6 +32,16 @@ namespace DashForReddit
             this.Suspending += OnSuspending;
         }
 
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            if (args.Kind == ActivationKind.Protocol)
+            {
+                ProtocolActivatedEventArgs eventArgs = args as ProtocolActivatedEventArgs;
+                Frame rootFrame = Window.Current.Content as Frame;
+                rootFrame.Navigate(typeof(MainPage), eventArgs.Uri);
+            }
+        }
+
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
@@ -62,6 +72,7 @@ namespace DashForReddit
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
+
 
             if (e.PrelaunchActivated == false)
             {
