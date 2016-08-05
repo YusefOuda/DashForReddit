@@ -150,7 +150,7 @@ namespace DashForReddit.Reddit
             public string author_flair_text { get; set; }
             public bool quarantine { get; set; }
             public string title { get; set; }
-            public double created_utc { get; set; }
+            public long created_utc { get; set; }
             public string distinguished { get; set; }
             public List<object> mod_reports { get; set; }
             public bool visited { get; set; }

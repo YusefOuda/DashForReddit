@@ -27,6 +27,7 @@ namespace DashForReddit
     {
         private ObservableCollection<Post> Posts { get; set; }
         private string subreddit { get; set; }
+        private string sort { get; set; }
 
         public PostList()
         {
@@ -48,15 +49,16 @@ namespace DashForReddit
             if (maxVerticalOffsetValue < 0 || verticalOffsetValue == maxVerticalOffsetValue)
             {
                 // Scrolled to bottom
-                Reddit.Reddit.getPosts(Posts, Posts.Last().Name, subreddit);
+                Reddit.Reddit.getPosts(Posts, Posts.Last().Name, subreddit, false, sort);
             }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var sub = e.Parameter as string;
-            this.subreddit = sub;
-            Reddit.Reddit.getPosts(Posts, null, sub, true);
+            var param = e.Parameter as dynamic;
+            this.subreddit = param.sub;
+            this.sort = param.sort;
+            Reddit.Reddit.getPosts(Posts, null, subreddit, true, sort);
         }
     }
 }

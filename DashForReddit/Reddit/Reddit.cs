@@ -119,12 +119,14 @@ namespace DashForReddit.Reddit
             return true;
         }
 
-        public async static void getPosts(ObservableCollection<Post> posts, string after = null, string subreddit = null, bool overrideColl = false)
+        public async static void getPosts(ObservableCollection<Post> posts, string after = null, string subreddit = null, bool overrideColl = false, string sort = null)
         {
             var x = await ensureTokenExists();
             var url = base_url;
             if (!string.IsNullOrWhiteSpace(subreddit))
                 url = $"{url}/r/{subreddit}";
+            if (!string.IsNullOrWhiteSpace(sort))
+                url = $"{url}/{sort}";
             if (!string.IsNullOrWhiteSpace(after))
                 url = $"{url}/?after={after}";
             var uri = new Uri(url);
@@ -150,7 +152,8 @@ namespace DashForReddit.Reddit
                         Subreddit = $"/r/{post.data.subreddit}",
                         Name = post.data.name,
                         URL = post.data.url,
-                        Permalink = post.data.permalink
+                        Permalink = post.data.permalink,
+                        Created = String.Format("{0:F}", DateTimeOffset.FromUnixTimeSeconds(post.data.created_utc).DateTime)
                     });
                 }
             }

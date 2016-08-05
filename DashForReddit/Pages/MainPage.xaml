@@ -16,7 +16,14 @@
         </Grid.RowDefinitions>
         <RelativePanel>
             <Button Name="HamburgerButton" Width="50" Click="HamburgerButton_Click" FontFamily="Segoe MDL2 Assets" FontSize="18" Content="&#xE700;" HorizontalAlignment="Left" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" VerticalAlignment="Stretch"></Button>
-            <AutoSuggestBox PlaceholderText="Search" RelativePanel.AlignRightWithPanel="True" Width="200" QueryIcon="Find" VerticalAlignment="Top" Margin="10,10"></AutoSuggestBox>
+            <ComboBox Name="SortComboBox" RelativePanel.LeftOf="SearchBox" RelativePanel.AlignVerticalCenterWith="SearchBox" Width="150" SelectionChanged="SortComboBox_SelectionChanged">
+                <ComboBoxItem Name="Hot" Content="Hot" IsSelected="True"></ComboBoxItem>
+                <ComboBoxItem Name="New" Content="New"></ComboBoxItem>
+                <ComboBoxItem Name="Rising" Content="Rising"></ComboBoxItem>
+                <ComboBoxItem Name="Controversial" Content="Controversial"></ComboBoxItem>
+                <ComboBoxItem Name="Top" Content="Top"></ComboBoxItem>
+            </ComboBox>
+            <AutoSuggestBox Name="SearchBox" PlaceholderText="Search" RelativePanel.AlignRightWithPanel="True" Width="200" QueryIcon="Find" VerticalAlignment="Top" Margin="10,10"></AutoSuggestBox>
         </RelativePanel>
         <SplitView Name="NavPane" Grid.Row="1" OpenPaneLength="200" DisplayMode="Inline">
             <SplitView.Pane>

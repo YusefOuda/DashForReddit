@@ -56,13 +56,22 @@ namespace DashForReddit
                     Text = "Login"
                 });
             }
-            ContentFrame.Navigate(typeof(PostList));
+            dynamic param = new
+            {
+                sub = "all",
+                sort = ((ComboBoxItem)(SortComboBox.SelectedItem)).Name.ToLower()
+            };
+            ContentFrame.Navigate(typeof(PostList), param);
         }
 
         private void NavListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var clicked = e.ClickedItem as Subreddit;
-            ContentFrame.Navigate(typeof(PostList), clicked.DisplayName);
+            dynamic param = new {
+                sub = clicked.DisplayName ?? "all",
+                sort = ((ComboBoxItem)(SortComboBox.SelectedItem)).Name.ToLower()
+            };
+            ContentFrame.Navigate(typeof(PostList), param);
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
@@ -89,6 +98,20 @@ namespace DashForReddit
             var clicked = e.ClickedItem as SettingNav;
             if (clicked.Name == "LoginItem")
                 ContentFrame.Navigate(typeof(LoginPage));
+        }
+
+        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ContentFrame != null)
+            {
+                var sub = NavListView != null && NavListView.SelectedItem != null ? ((Subreddit)(NavListView.SelectedItem)).DisplayName : "all";
+                dynamic param = new
+                {
+                    sub = sub,
+                    sort = ((ComboBoxItem)(SortComboBox.SelectedItem)).Name.ToLower()
+                };
+                ContentFrame.Navigate(typeof(PostList), param);
+            }
         }
     }
 }

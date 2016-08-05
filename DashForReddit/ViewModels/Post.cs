@@ -15,6 +15,7 @@ namespace DashForReddit.ViewModels
         public string Name { get; set; }
         public string URL { get; set; }
         public string Permalink { get; set; }
+        public string Created { get; set; }
     }
 
     public class Subreddit
