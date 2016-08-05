@@ -13,13 +13,23 @@ namespace DashForReddit.Reddit
     class Reddit
     {
         public static string client_id = "BOiQ4k3IpBQqCw";
-        private static string base_url = "https://oauth.reddit.com/";
-        private async static Task<Tuple<string, int>> getToken()
+        private static string base_url = "https://oauth.reddit.com";
+        public static bool isLoggedIn
+        {
+            get
+            {
+                var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                var refreshToken = (string)settings.Values["refresh_token"];
+                return !string.IsNullOrWhiteSpace(refreshToken);
+            }
+        }
+        public async static Task<bool> getDurableToken(string code)
         {
             var uri = new Uri("https://www.reddit.com/api/v1/access_token");
-            var deviceId = Windows.Storage.ApplicationData.Current.LocalSettings.Values["deviceid"];
-            var content = new HttpStringContent($"grant_type=https://oauth.reddit.com/grants/installed_client&device_id={deviceId}");
+            var redirect_uri = "com.youda.dashforreddit://test";
+            var content = new HttpStringContent($"grant_type=authorization_code&code={code}&redirect_uri={redirect_uri}");
             content.Headers.ContentType = new HttpMediaTypeHeaderValue("application/x-www-form-urlencoded");
+            TokenResponse tokenResponse;
             using (var cli = new HttpClient())
             {
                 cli.DefaultRequestHeaders.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{client_id}:"))}");
@@ -28,41 +38,93 @@ namespace DashForReddit.Reddit
                 if (!resp.IsSuccessStatusCode)
                     throw new Exception("Could not authenticate with Reddit API. Please try again.");
                 var jsonString = await resp.Content.ReadAsStringAsync();
-                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(jsonString);
-                return new Tuple<string, int>(tokenResponse?.access_token, tokenResponse.expires_in);
+                tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(jsonString);
             }
+            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            localSettings.Values["access_token"] = tokenResponse.access_token;
+            localSettings.Values["refresh_token"] = tokenResponse.refresh_token;
+            localSettings.Values["access_token_expiration"] = DateTime.Now.AddSeconds(tokenResponse.expires_in).ToString();
+
+            return true;
+        }
+
+        private async static Task<bool> refreshAccessToken()
+        {
+            var uri = new Uri("https://www.reddit.com/api/v1/access_token");
+            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var refresh_token = localSettings.Values["refresh_token"];
+            var content = new HttpStringContent($"grant_type=refresh_token&refresh_token={refresh_token}");
+            content.Headers.ContentType = new HttpMediaTypeHeaderValue("application/x-www-form-urlencoded");
+            TokenResponse tokenResponse;
+            using (var cli = new HttpClient())
+            {
+                cli.DefaultRequestHeaders.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{client_id}:"))}");
+                cli.DefaultRequestHeaders.Accept.Add(new Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+                HttpResponseMessage resp = await cli.PostAsync(uri, content);
+                if (!resp.IsSuccessStatusCode)
+                    throw new Exception("Could not authenticate with Reddit API. Please try again.");
+                var jsonString = await resp.Content.ReadAsStringAsync();
+                tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(jsonString);
+            }
+            localSettings.Values["access_token"] = tokenResponse.access_token;
+            localSettings.Values["access_token_expiration"] = DateTime.Now.AddSeconds(tokenResponse.expires_in).ToString();
+            return true;
+        }
+
+        private async static Task<bool> getToken()
+        {
+            Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var uri = new Uri("https://www.reddit.com/api/v1/access_token");
+            var deviceId = Windows.Storage.ApplicationData.Current.LocalSettings.Values["deviceid"];
+            var content = new HttpStringContent($"grant_type=https://oauth.reddit.com/grants/installed_client&device_id={deviceId}");
+            content.Headers.ContentType = new HttpMediaTypeHeaderValue("application/x-www-form-urlencoded");
+            TokenResponse tokenResponse;
+            using (var cli = new HttpClient())
+            {
+                cli.DefaultRequestHeaders.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{client_id}:"))}");
+                cli.DefaultRequestHeaders.Accept.Add(new Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+                HttpResponseMessage resp = await cli.PostAsync(uri, content);
+                if (!resp.IsSuccessStatusCode)
+                    throw new Exception("Could not authenticate with Reddit API. Please try again.");
+                var jsonString = await resp.Content.ReadAsStringAsync();
+                tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(jsonString);
+            }
+            localSettings.Values["access_token"] = tokenResponse.access_token;
+            localSettings.Values["access_token_expiration"] = DateTime.Now.AddSeconds(tokenResponse.expires_in).ToString();
+            return true;
         }
 
         private async static Task<bool> ensureTokenExists()
         {
             Windows.Storage.ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             DateTime expiration;
-            Tuple<string, int> tokenResponse;
-            if (string.IsNullOrWhiteSpace((string)localSettings.Values["access_token"]))
+            DateTime.TryParse((string)localSettings.Values["access_token_expiration"], out expiration);
+            if (!string.IsNullOrWhiteSpace((string)localSettings.Values["refresh_token"]))
             {
-                tokenResponse = await getToken();
-                localSettings.Values["access_token"] = tokenResponse.Item1;
-                localSettings.Values["access_token_expiration"] = DateTime.Now.AddSeconds(tokenResponse.Item2).ToString();
+                if (expiration < DateTime.Now.AddSeconds(-120))
+                    await refreshAccessToken();
+            }
+            else if (string.IsNullOrWhiteSpace((string)localSettings.Values["access_token"]))
+            {
+                await getToken();
             }
             else if (localSettings.Values["access_token_expiration"] != null && DateTime.TryParse((string)localSettings.Values["access_token_expiration"], out expiration))
             {
                 if (expiration < DateTime.Now.AddSeconds(-120))
                 {
-                    tokenResponse = await getToken();
-                    localSettings.Values["access_token"] = tokenResponse.Item1;
-                    localSettings.Values["access_token_expiration"] = DateTime.Now.AddSeconds(tokenResponse.Item2).ToString();
+                    await getToken();
                 }
             }
 
             return true;
         }
 
-        public async static void getAll(ObservableCollection<Post> posts, string after = null, string subreddit = null, bool overrideColl = false)
+        public async static void getPosts(ObservableCollection<Post> posts, string after = null, string subreddit = null, bool overrideColl = false)
         {
             var x = await ensureTokenExists();
             var url = base_url;
             if (!string.IsNullOrWhiteSpace(subreddit))
-                url = $"{url}r/{subreddit}";
+                url = $"{url}/r/{subreddit}";
             if (!string.IsNullOrWhiteSpace(after))
                 url = $"{url}/?after={after}";
             var uri = new Uri(url);
@@ -87,15 +149,28 @@ namespace DashForReddit.Reddit
                         Ups = post.data.ups,
                         Subreddit = $"/r/{post.data.subreddit}",
                         Name = post.data.name,
-                        URL = post.data.url
+                        URL = post.data.url,
+                        Permalink = post.data.permalink
                     });
                 }
             }
         }
 
-        public async static void getDefaultList(ObservableCollection<DefaultSubreddit> defaults)
+        public async static void getDefaultSubs(ObservableCollection<Subreddit> subs, string after = null)
         {
-            var uri = new Uri("https://www.reddit.com/subreddits/default.json");
+            if (string.IsNullOrWhiteSpace(after))
+            {
+                subs.Add(new Subreddit()
+                {
+                    Name = "All",
+                    DisplayName = "all",
+                    ID = "All"
+                });
+            }
+            var url = $"https://www.reddit.com/subreddits/default.json";
+            if (!string.IsNullOrWhiteSpace(after))
+                url = $"{url}?after={after}";
+            var uri = new Uri(url);
             using (var cli = new HttpClient())
             {
                 HttpResponseMessage resp = await cli.GetAsync(uri);
@@ -103,22 +178,42 @@ namespace DashForReddit.Reddit
                     throw new Exception("Could not connect to Reddit API. Please try again.");
                 var jsonString = await resp.Content.ReadAsStringAsync();
                 var postsResponse = JsonConvert.DeserializeObject<DefaultSubredditsRoot>(jsonString);
-                defaults.Add(new DefaultSubreddit()
-                {
-                    Name = "All",
-                    DisplayName = "All",
-                    ID = "All"
-                });
                 foreach (var post in postsResponse.data.children)
                 {
-                    defaults.Add(new ViewModels.DefaultSubreddit()
+                    subs.Add(new ViewModels.Subreddit()
                     {
                         Name = post.data.name,
                         DisplayName = post.data.display_name,
                         ID = post.data.id
                     });
                 }
+                if (!string.IsNullOrWhiteSpace(postsResponse.data.after))
+                    getDefaultSubs(subs, postsResponse.data.after);
             }
+        }
+
+        public async static Task<object> getPostDetails(string link)
+        {
+            var x = await ensureTokenExists();
+            var url = $"{base_url}{link}";
+            var uri = new Uri(url);
+            using (var cli = new HttpClient())
+            {
+                var token = Windows.Storage.ApplicationData.Current.LocalSettings.Values["access_token"];
+                cli.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                cli.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("win10:DashForReddit (by /u/chubbyshrimp"));
+                HttpResponseMessage resp = await cli.GetAsync(uri);
+                if (!resp.IsSuccessStatusCode)
+                    throw new Exception("Could not connect to Reddit API. Please try again.");
+                var jsonString = await resp.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<dynamic>(jsonString);
+            }
+
+        }
+
+        private async static void getSubscribedSubs()
+        {
+
         }
     }
 }

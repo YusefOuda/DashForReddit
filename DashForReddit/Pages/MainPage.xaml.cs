@@ -30,12 +30,14 @@ namespace DashForReddit
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private ObservableCollection<DefaultSubreddit> Defaults { get; set; }
+        private ObservableCollection<Subreddit> Subreddits { get; set; }
+        private ObservableCollection<SettingNav> Settings { get; set; }
 
         public MainPage()
         {
             this.InitializeComponent();
-            Defaults = new ObservableCollection<DefaultSubreddit>();
+            Subreddits = new ObservableCollection<Subreddit>();
+            Settings = new ObservableCollection<SettingNav>();
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
@@ -43,15 +45,23 @@ namespace DashForReddit
             NavPane.IsPaneOpen = !NavPane.IsPaneOpen;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            Reddit.Reddit.getDefaultList(Defaults);
+            Reddit.Reddit.getDefaultSubs(Subreddits);
+            if (!Reddit.Reddit.isLoggedIn)
+            {
+                Settings.Add(new SettingNav()
+                {
+                    Name = "LoginItem",
+                    Text = "Login"
+                });
+            }
             ContentFrame.Navigate(typeof(PostList));
         }
 
         private void NavListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var clicked = e.ClickedItem as DefaultSubreddit;
+            var clicked = e.ClickedItem as Subreddit;
             ContentFrame.Navigate(typeof(PostList), clicked.DisplayName);
         }
 
@@ -61,6 +71,7 @@ namespace DashForReddit
             {
                 var uri = e.Parameter as Uri;
                 var paramResult = GetParams(uri.AbsoluteUri);
+                await Reddit.Reddit.getDurableToken(paramResult["code"]);
             }
         }
 
@@ -71,6 +82,13 @@ namespace DashForReddit
                 m => Uri.UnescapeDataString(m.Groups[2].Value),
                 m => Uri.UnescapeDataString(m.Groups[3].Value)
             );
+        }
+
+        private void SettingsNav_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var clicked = e.ClickedItem as SettingNav;
+            if (clicked.Name == "LoginItem")
+                ContentFrame.Navigate(typeof(LoginPage));
         }
     }
 }

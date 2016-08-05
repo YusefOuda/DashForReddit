@@ -1,4 +1,5 @@
-﻿using DashForReddit.ViewModels;
+﻿using DashForReddit.Pages;
+using DashForReddit.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,7 +37,8 @@ namespace DashForReddit
         private void PostListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var post = (Post)e.ClickedItem;
-            Frame.Navigate(typeof(PostDetail), post.URL);
+            //Frame.Navigate(typeof(PostDetail), post.URL);
+            Frame.Navigate(typeof(CommentsView), post.Permalink);
         }
 
         private void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -46,7 +48,7 @@ namespace DashForReddit
             if (maxVerticalOffsetValue < 0 || verticalOffsetValue == maxVerticalOffsetValue)
             {
                 // Scrolled to bottom
-                Reddit.Reddit.getAll(Posts, Posts.Last().Name, subreddit);
+                Reddit.Reddit.getPosts(Posts, Posts.Last().Name, subreddit);
             }
         }
 
@@ -54,7 +56,7 @@ namespace DashForReddit
         {
             var sub = e.Parameter as string;
             this.subreddit = sub;
-            Reddit.Reddit.getAll(Posts, null, sub, true);
+            Reddit.Reddit.getPosts(Posts, null, sub, true);
         }
     }
 }

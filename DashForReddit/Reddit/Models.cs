@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace DashForReddit.Reddit
             public string device_id { get; set; }
             public int expires_in { get; set; }
             public string scope { get; set; }
+            public string refresh_token { get; set; }
         }
 
         public class MediaEmbed
@@ -182,8 +184,8 @@ namespace DashForReddit.Reddit
             public bool user_sr_theme_enabled { get; set; }
             public string submit_text_html { get; set; }
             public object user_is_banned { get; set; }
-            public bool wiki_enabled { get; set; }
-            public bool show_media { get; set; }
+            public bool? wiki_enabled { get; set; }
+            public bool? show_media { get; set; }
             public string id { get; set; }
             public string submit_text { get; set; }
             public string display_name { get; set; }

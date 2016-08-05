@@ -18,17 +18,30 @@
             <Button Name="HamburgerButton" Width="50" Click="HamburgerButton_Click" FontFamily="Segoe MDL2 Assets" FontSize="18" Content="&#xE700;" HorizontalAlignment="Left" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" VerticalAlignment="Stretch"></Button>
             <AutoSuggestBox PlaceholderText="Search" RelativePanel.AlignRightWithPanel="True" Width="200" QueryIcon="Find" VerticalAlignment="Top" Margin="10,10"></AutoSuggestBox>
         </RelativePanel>
-        <SplitView Name="NavPane" Grid.Row="1" OpenPaneLength="150" DisplayMode="Inline">
+        <SplitView Name="NavPane" Grid.Row="1" OpenPaneLength="200" DisplayMode="Inline">
             <SplitView.Pane>
-                <ListView Name="NavListView" IsItemClickEnabled="True" ItemClick="NavListView_ItemClick" ItemsSource="{x:Bind Defaults}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="vm:DefaultSubreddit">
-                            <StackPanel>
-                                <TextBlock Name="{x:Bind Name}" Text="{x:Bind DisplayName}" FontSize="16"></TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                <ScrollViewer>
+                    <StackPanel>
+                        <ListView Name="SettingsNav" IsItemClickEnabled="True" ItemClick="SettingsNav_ItemClick" ItemsSource="{x:Bind Settings}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:SettingNav">
+                                    <StackPanel>
+                                        <TextBlock Name="{x:Bind Name}" Text="{x:Bind Text}" FontSize="16"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <ListView Name="NavListView" IsItemClickEnabled="True" ItemClick="NavListView_ItemClick" ItemsSource="{x:Bind Subreddits}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:Subreddit">
+                                    <StackPanel>
+                                        <TextBlock Name="{x:Bind Name}" Text="{x:Bind DisplayName}" FontSize="16"></TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </ScrollViewer>
             </SplitView.Pane>
             <SplitView.Content>
                 <Frame Name="ContentFrame"></Frame>
