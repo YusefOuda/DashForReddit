@@ -19,11 +19,18 @@ namespace DashForReddit.ViewModels
         public string Thumbnail { get; set; }
     }
 
-    public class Subreddit
+    public class Subreddit : IComparable
     {
         public string ID { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
+
+        public int CompareTo(object o)
+        {
+            Subreddit a = this;
+            Subreddit b = (Subreddit)o;
+            return string.Compare(a.DisplayName, b.DisplayName);
+        }
     }
 
     public class SettingNav

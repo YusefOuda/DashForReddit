@@ -29,7 +29,7 @@
             <SplitView.Pane>
                 <ScrollViewer>
                     <StackPanel>
-                        <ListView Name="SettingsNav" IsItemClickEnabled="True" ItemClick="SettingsNav_ItemClick" ItemsSource="{x:Bind Settings}">
+                        <ListView Name="SettingsNav" IsItemClickEnabled="True" ItemClick="SettingsNav_ItemClick" ItemsSource="{x:Bind Settings}" BorderBrush="Black" BorderThickness="0,0,0,2">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="vm:SettingNav">
                                     <StackPanel>

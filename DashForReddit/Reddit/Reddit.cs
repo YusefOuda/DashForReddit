@@ -9,12 +9,14 @@ using Windows.Web.Http;
 using Windows.Web.Http.Headers;
 using static DashForReddit.Reddit.Models.DefaultSubreddits;
 using static DashForReddit.Reddit.Models.Token;
+using static DashForReddit.Helpers;
 
 namespace DashForReddit.Reddit
 {
     class Reddit
     {
         public static string client_id = "BOiQ4k3IpBQqCw";
+        public static List<string> defaults = new List<string>() { "philosophy", "Music", "gaming", "Art", "news", "DIY", "WritingPrompts", "UpliftingNews", "sports", "videos", "askscience", "blog", "LifeProTips", "aww", "nottheonion", "movies", "personalfinance", "AskReddit", "books", "science", "creepy", "photoshopbattles", "television", "worldnews", "pics", "announcements", "history", "gifs", "todayilearned", "food", "Jokes", "funny", "Documentaries", "OldSchoolCool", "IAmA", "explainlikeimfive", "TwoXChromosomes", "InternetIsBeautiful", "mildlyinteresting", "nosleep", "dataisbeautiful", "listentothis", "olympics", "GetMotivated", "EarthPorn", "Showerthoughts", "tifu", "space", "Futurology", "gadgets" };
         private static string base_url = "https://oauth.reddit.com";
         public static bool isLoggedIn
         {
@@ -170,39 +172,69 @@ namespace DashForReddit.Reddit
             }
         }
 
-        public async static void getDefaultSubs(ObservableCollection<Subreddit> subs, string after = null)
+        public async static void getListOfSubs(ObservableCollection<Subreddit> subs, string after = null, bool overrideColl = false)
         {
-            if (string.IsNullOrWhiteSpace(after))
+            if (overrideColl)
+                subs.Clear();
+            if (isLoggedIn)
+            {
+                var x = await ensureTokenExists();
+                if (string.IsNullOrWhiteSpace(after))
+                {
+                    subs.Add(new Subreddit()
+                    {
+                        Name = "All",
+                        DisplayName = "/r/all"
+                    });
+                }
+                string url = $"{base_url}/subreddits/mine/subscriber";
+                if (!string.IsNullOrWhiteSpace(after))
+                    url = $"{url}?after={after}";
+                var uri = new Uri(url);
+                using (var cli = new HttpClient())
+                {
+                    var token = Windows.Storage.ApplicationData.Current.LocalSettings.Values["access_token"];
+                    cli.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                    cli.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("win10:DashForReddit (by /u/chubbyshrimp"));
+                    HttpResponseMessage resp = await cli.GetAsync(uri);
+                    if (!resp.IsSuccessStatusCode)
+                        throw new Exception("Could not connect to Reddit API. Please try again.");
+                    var jsonString = await resp.Content.ReadAsStringAsync();
+                    var postsResponse = JsonConvert.DeserializeObject<DefaultSubredditsRoot>(jsonString);
+                    foreach (var post in postsResponse.data.children)
+                    {
+                        subs.Add(new Subreddit()
+                        {
+                            Name = post.data.display_name,
+                            DisplayName = $"/r/{post.data.display_name}"
+                        });
+                    }
+                    subs.Sort();
+                    if (!string.IsNullOrWhiteSpace(postsResponse.data.after))
+                        getListOfSubs(subs, postsResponse.data.after, false);
+                }
+            }
+            else
+            {
+                getDefaultSubs(subs);
+            }
+        }
+
+        private static void getDefaultSubs(ObservableCollection<Subreddit> subs)
+        {
+            subs.Add(new Subreddit()
+            {
+                Name = "All",
+                DisplayName = "/r/all"
+            });
+
+            foreach (var sub in defaults)
             {
                 subs.Add(new Subreddit()
                 {
-                    Name = "All",
-                    DisplayName = "all",
-                    ID = "All"
+                    Name = sub.ToLower(),
+                    DisplayName = $"/r/{sub}"
                 });
-            }
-            var url = $"https://www.reddit.com/subreddits/default.json";
-            if (!string.IsNullOrWhiteSpace(after))
-                url = $"{url}?after={after}";
-            var uri = new Uri(url);
-            using (var cli = new HttpClient())
-            {
-                HttpResponseMessage resp = await cli.GetAsync(uri);
-                if (!resp.IsSuccessStatusCode)
-                    throw new Exception("Could not connect to Reddit API. Please try again.");
-                var jsonString = await resp.Content.ReadAsStringAsync();
-                var postsResponse = JsonConvert.DeserializeObject<DefaultSubredditsRoot>(jsonString);
-                foreach (var post in postsResponse.data.children)
-                {
-                    subs.Add(new ViewModels.Subreddit()
-                    {
-                        Name = post.data.name,
-                        DisplayName = post.data.display_name,
-                        ID = post.data.id
-                    });
-                }
-                if (!string.IsNullOrWhiteSpace(postsResponse.data.after))
-                    getDefaultSubs(subs, postsResponse.data.after);
             }
         }
 
@@ -222,7 +254,28 @@ namespace DashForReddit.Reddit
                 var jsonString = await resp.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<List<Models.PostDetailsAndComments.RootObject>>(jsonString);
             }
+        }
 
+        public async static Task<bool> logOut()
+        {
+            var x = await ensureTokenExists();
+            var url = $"https://www.reddit.com/api/v1/revoke_token";
+            var uri = new Uri(url);
+            var refreshToken = Windows.Storage.ApplicationData.Current.LocalSettings.Values["refresh_token"];
+            var content = new HttpStringContent($"token={refreshToken}&token_type_hint=refresh_token");
+            using (var cli = new HttpClient())
+            {
+                cli.DefaultRequestHeaders.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.ASCII.GetBytes($"{client_id}:"))}");
+                cli.DefaultRequestHeaders.UserAgent.Add(new HttpProductInfoHeaderValue("win10:DashForReddit (by /u/chubbyshrimp"));
+                HttpResponseMessage resp = await cli.PostAsync(uri, content);
+                if (!resp.IsSuccessStatusCode)
+                    throw new Exception("Could not connect to Reddit API. Please try again.");
+                var jsonString = await resp.Content.ReadAsStringAsync();
+                Windows.Storage.ApplicationData.Current.LocalSettings.Values["refresh_token"] = null;
+                Windows.Storage.ApplicationData.Current.LocalSettings.Values["access_token"] = null;
+                Windows.Storage.ApplicationData.Current.LocalSettings.Values["access_token_expiration"] = null;
+                return true;
+            }
         }
 
         private async static void getSubscribedSubs()

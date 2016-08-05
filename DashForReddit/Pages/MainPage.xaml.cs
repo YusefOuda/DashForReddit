@@ -47,7 +47,20 @@ namespace DashForReddit
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            Reddit.Reddit.getDefaultSubs(Subreddits);
+            UpdateNavList(false);
+            dynamic param = new
+            {
+                sub = "",
+                sort = ((ComboBoxItem)(SortComboBox.SelectedItem)).Name.ToLower()
+            };
+            ContentFrame.Navigate(typeof(PostList), param);
+        }
+
+        private void UpdateNavList(bool overrideSubs)
+        {
+            Reddit.Reddit.getListOfSubs(Subreddits, null, overrideSubs);
+
+            Settings.Clear();
             if (!Reddit.Reddit.isLoggedIn)
             {
                 Settings.Add(new SettingNav()
@@ -56,19 +69,21 @@ namespace DashForReddit
                     Text = "Login"
                 });
             }
-            dynamic param = new
+            else
             {
-                sub = "all",
-                sort = ((ComboBoxItem)(SortComboBox.SelectedItem)).Name.ToLower()
-            };
-            ContentFrame.Navigate(typeof(PostList), param);
+                Settings.Add(new SettingNav()
+                {
+                    Name = "LogoutItem",
+                    Text = "Logout"
+                });
+            }
         }
 
         private void NavListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var clicked = e.ClickedItem as Subreddit;
             dynamic param = new {
-                sub = clicked.DisplayName ?? "all",
+                sub = clicked.Name ?? "",
                 sort = ((ComboBoxItem)(SortComboBox.SelectedItem)).Name.ToLower()
             };
             ContentFrame.Navigate(typeof(PostList), param);
@@ -81,6 +96,7 @@ namespace DashForReddit
                 var uri = e.Parameter as Uri;
                 var paramResult = GetParams(uri.AbsoluteUri);
                 await Reddit.Reddit.getDurableToken(paramResult["code"]);
+                UpdateNavList(true);
             }
         }
 
@@ -93,18 +109,25 @@ namespace DashForReddit
             );
         }
 
-        private void SettingsNav_ItemClick(object sender, ItemClickEventArgs e)
+        private async void SettingsNav_ItemClick(object sender, ItemClickEventArgs e)
         {
             var clicked = e.ClickedItem as SettingNav;
             if (clicked.Name == "LoginItem")
+            {
                 ContentFrame.Navigate(typeof(LoginPage));
+            }
+            else if (clicked.Name == "LogoutItem")
+            {
+                await Reddit.Reddit.logOut();
+                UpdateNavList(true);
+            }
         }
 
         private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ContentFrame != null)
             {
-                var sub = NavListView != null && NavListView.SelectedItem != null ? ((Subreddit)(NavListView.SelectedItem)).DisplayName : "all";
+                var sub = NavListView != null && NavListView.SelectedItem != null ? ((Subreddit)(NavListView.SelectedItem)).Name : "";
                 dynamic param = new
                 {
                     sub = sub,
