@@ -25,7 +25,7 @@
             </ComboBox>
             <AutoSuggestBox Name="SearchBox" PlaceholderText="Search" RelativePanel.AlignRightWithPanel="True" Width="200" QueryIcon="Find" VerticalAlignment="Top" Margin="10,10"></AutoSuggestBox>
         </RelativePanel>
-        <SplitView Name="NavPane" Grid.Row="1" OpenPaneLength="200" DisplayMode="Inline">
+        <SplitView Name="NavPane" Grid.Row="1" OpenPaneLength="200" DisplayMode="Inline" IsPaneOpen="True">
             <SplitView.Pane>
                 <ScrollViewer>
                     <StackPanel>

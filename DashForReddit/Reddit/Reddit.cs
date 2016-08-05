@@ -1,12 +1,14 @@
 ﻿using DashForReddit.ViewModels;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
-using static DashForReddit.Reddit.Models;
+using static DashForReddit.Reddit.Models.DefaultSubreddits;
+using static DashForReddit.Reddit.Models.Token;
 
 namespace DashForReddit.Reddit
 {
@@ -101,7 +103,7 @@ namespace DashForReddit.Reddit
             DateTime.TryParse((string)localSettings.Values["access_token_expiration"], out expiration);
             if (!string.IsNullOrWhiteSpace((string)localSettings.Values["refresh_token"]))
             {
-                if (expiration < DateTime.Now.AddSeconds(-120))
+                if (expiration < DateTime.Now)
                     await refreshAccessToken();
             }
             else if (string.IsNullOrWhiteSpace((string)localSettings.Values["access_token"]))
@@ -119,7 +121,7 @@ namespace DashForReddit.Reddit
             return true;
         }
 
-        public async static void getPosts(ObservableCollection<Post> posts, string after = null, string subreddit = null, bool overrideColl = false, string sort = null)
+        public async static void getPosts(ObservableCollection<ViewModels.Post> posts, string after = null, string subreddit = null, bool overrideColl = false, string sort = null)
         {
             var x = await ensureTokenExists();
             var url = base_url;
@@ -139,12 +141,12 @@ namespace DashForReddit.Reddit
                 if (!resp.IsSuccessStatusCode)
                     throw new Exception("Could not connect to Reddit API. Please try again.");
                 var jsonString = await resp.Content.ReadAsStringAsync();
-                var postsResponse = JsonConvert.DeserializeObject<RootObject>(jsonString);
+                var postsResponse = JsonConvert.DeserializeObject<Models.PostList.RootObject>(jsonString);
                 if (overrideColl)
                     posts.Clear();
                 foreach (var post in postsResponse.data.children)
                 {
-                    posts.Add(new ViewModels.Post()
+                    var postVM = new ViewModels.Post()
                     {
                         Title = post.data.title,
                         Author = post.data.author,
@@ -154,7 +156,16 @@ namespace DashForReddit.Reddit
                         URL = post.data.url,
                         Permalink = post.data.permalink,
                         Created = String.Format("{0:F}", DateTimeOffset.FromUnixTimeSeconds(post.data.created_utc).DateTime)
-                    });
+                    };
+
+                    Uri thumbnail;
+                    Uri.TryCreate(post.data.thumbnail, UriKind.RelativeOrAbsolute, out thumbnail);
+                    if (thumbnail != null && thumbnail.IsAbsoluteUri)
+                        postVM.Thumbnail = post.data.thumbnail;
+                    else
+                        postVM.Thumbnail = "Assets/placeholder.png";
+
+                    posts.Add(postVM);
                 }
             }
         }
@@ -195,7 +206,7 @@ namespace DashForReddit.Reddit
             }
         }
 
-        public async static Task<object> getPostDetails(string link)
+        public async static Task<List<Models.PostDetailsAndComments.RootObject>> getPostDetails(string link)
         {
             var x = await ensureTokenExists();
             var url = $"{base_url}{link}";
@@ -209,7 +220,7 @@ namespace DashForReddit.Reddit
                 if (!resp.IsSuccessStatusCode)
                     throw new Exception("Could not connect to Reddit API. Please try again.");
                 var jsonString = await resp.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<dynamic>(jsonString);
+                return JsonConvert.DeserializeObject<List<Models.PostDetailsAndComments.RootObject>>(jsonString);
             }
 
         }

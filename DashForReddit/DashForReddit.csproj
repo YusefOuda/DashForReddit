@@ -97,6 +97,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BooleanToVisibilityConverter.cs" />
+    <Compile Include="GlyphConverter.cs" />
     <Compile Include="Pages\CommentsView.xaml.cs">
       <DependentUpon>CommentsView.xaml</DependentUpon>
     </Compile>
@@ -113,9 +115,12 @@
       <DependentUpon>PostList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reddit\Models.cs" />
+    <Compile Include="Reddit\Models\PostDetailsAndComments.cs" />
+    <Compile Include="Reddit\Models\PostList.cs" />
+    <Compile Include="Reddit\Models\DefaultSubreddits.cs" />
+    <Compile Include="Reddit\Models\Token.cs" />
     <Compile Include="Reddit\Reddit.cs" />
-    <Compile Include="ViewModels\Post.cs" />
+    <Compile Include="ViewModels\ViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -125,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="Assets\placeholder.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -159,6 +165,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="TreeViewControl, Version=255.255.255.255, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dependencies\TreeViewControl.winmd</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

@@ -25,19 +25,19 @@ namespace DashForReddit
     /// </summary>
     public sealed partial class PostList : Page
     {
-        private ObservableCollection<Post> Posts { get; set; }
+        private ObservableCollection<ViewModels.Post> Posts { get; set; }
         private string subreddit { get; set; }
         private string sort { get; set; }
 
         public PostList()
         {
             this.InitializeComponent();
-            Posts = new ObservableCollection<Post>();
+            Posts = new ObservableCollection<ViewModels.Post>();
         }
 
         private void PostListView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            var post = (Post)e.ClickedItem;
+            var post = (ViewModels.Post)e.ClickedItem;
             //Frame.Navigate(typeof(PostDetail), post.URL);
             Frame.Navigate(typeof(CommentsView), post.Permalink);
         }

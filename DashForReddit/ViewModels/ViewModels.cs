@@ -16,6 +16,7 @@ namespace DashForReddit.ViewModels
         public string URL { get; set; }
         public string Permalink { get; set; }
         public string Created { get; set; }
+        public string Thumbnail { get; set; }
     }
 
     public class Subreddit
@@ -29,5 +30,18 @@ namespace DashForReddit.ViewModels
     {
         public string Name { get; set; }
         public string Text { get; set; }
+    }
+
+    public class Comment
+    {
+        public string Body { get; set; }
+        public bool HasReplies { get; set; }
+        public bool HasNoReplies
+        {
+            get
+            {
+                return !HasReplies;
+            }
+        }
     }
 }

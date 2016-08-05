@@ -2,12 +2,58 @@
     x:Class="DashForReddit.Pages.CommentsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:DashForReddit.Pages"
+    xmlns:local="using:DashForReddit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tvs="using:TreeViewControl"
     mc:Ignorable="d">
 
-    <StackPanel Background="White">
-        <RichTextBlock TextWrapping="Wrap"></RichTextBlock>
-    </StackPanel>
+    <Page.Resources>
+        <tvs:IntegerToIndentationConverter x:Key="IntToIndConverter"/>
+        <local:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"  />
+        <local:BooleanToVisibilityConverter x:Key="inverseBooleanToVisibilityConverter" IsInverse="True" />
+
+        <DataTemplate x:Key="TreeViewItemDataTemplate">
+            <Grid VerticalAlignment="Stretch" Margin="{Binding Depth, Converter={StaticResource IntToIndConverter}}" AllowDrop="{Binding Data.HasReplies}">
+                <TextBlock RelativePanel.RightOf="expandCollapseChevron" Text="{Binding Data.Body}" TextWrapping="Wrap" Style="{ThemeResource BodyTextBlockStyle}"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <RelativePanel>
+                <TextBlock HorizontalAlignment="Left" Name="PostTitle" FontSize="24" TextWrapping="WrapWholeWords" Margin="0,0,0,15"></TextBlock>
+                <TextBlock RelativePanel.Below="PostTitle" RelativePanel.AlignLeftWith="PostTitle" Name="PostBody" FontSize="16" TextWrapping="WrapWholeWords" Margin="0,0,0,15"></TextBlock>
+            </RelativePanel>
+            <tvs:TreeView x:Name="commentTreeView" 
+                      Grid.Row="1"
+                      Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" 
+                      Margin="0,0,10,0"
+                      IsItemClickEnabled="True" 
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Top"
+                      ItemTemplate="{StaticResource TreeViewItemDataTemplate}"
+                      ReorderMode="Disabled">
+                <tvs:TreeView.Resources>
+                    <Style TargetType="tvs:TreeViewItem">
+                        <Setter Property="BorderBrush" Value="Black"></Setter>
+                        <Setter Property="BorderThickness" Value="0"></Setter>
+                        <Setter Property="Padding" Value="5"></Setter>
+                    </Style>
+                </tvs:TreeView.Resources>
+                <tvs:TreeView.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <ContentThemeTransition />
+                        <ReorderThemeTransition />
+                        <EntranceThemeTransition IsStaggeringEnabled="False" />
+                    </TransitionCollection>
+                </tvs:TreeView.ItemContainerTransitions>
+            </tvs:TreeView>
+        </Grid>
+    </ScrollViewer>
 </Page>
