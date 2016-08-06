@@ -97,7 +97,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\IntegerToBrushConverter.cs" />
     <Compile Include="GlyphConverter.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Pages\CommentsView.xaml.cs">

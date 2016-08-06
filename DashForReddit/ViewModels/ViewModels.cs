@@ -42,13 +42,9 @@ namespace DashForReddit.ViewModels
     public class Comment
     {
         public string Body { get; set; }
+        public string Author { get; set; }
+        public string Created { get; set; }
+        public int Ups { get; set; }
         public bool HasReplies { get; set; }
-        public bool HasNoReplies
-        {
-            get
-            {
-                return !HasReplies;
-            }
-        }
     }
 }

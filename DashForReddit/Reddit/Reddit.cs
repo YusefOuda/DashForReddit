@@ -130,7 +130,9 @@ namespace DashForReddit.Reddit
             if (!string.IsNullOrWhiteSpace(subreddit))
                 url = $"{url}/r/{subreddit}";
             if (!string.IsNullOrWhiteSpace(sort))
-                url = $"{url}/{sort}";
+            {
+                url = $"{url}/{sort.Replace("_", "?t=")}";
+            }
             if (!string.IsNullOrWhiteSpace(after))
                 url = $"{url}/?after={after}";
             var uri = new Uri(url);
@@ -157,7 +159,7 @@ namespace DashForReddit.Reddit
                         Name = post.data.name,
                         URL = post.data.url,
                         Permalink = post.data.permalink,
-                        Created = String.Format("{0:F}", DateTimeOffset.FromUnixTimeSeconds(post.data.created_utc).DateTime)
+                        Created = Helpers.GetElapsedTime(post.data.created_utc)//String.Format("{0:F}", DateTimeOffset.FromUnixTimeSeconds(post.data.created_utc).DateTime)
                     };
 
                     Uri thumbnail;

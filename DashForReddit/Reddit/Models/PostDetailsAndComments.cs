@@ -97,7 +97,7 @@ namespace DashForReddit.Reddit.Models
             public object author_flair_text { get; set; }
             public bool quarantine { get; set; }
             public string title { get; set; }
-            public double created_utc { get; set; }
+            public long created_utc { get; set; }
             public int ups { get; set; }
             public double upvote_ratio { get; set; }
             public int num_comments { get; set; }

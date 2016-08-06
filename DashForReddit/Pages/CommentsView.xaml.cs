@@ -41,7 +41,10 @@ namespace DashForReddit.Pages
                 var parentComment = new Comment()
                 {
                     Body = comment.data.body,
-                    HasReplies = hasReplies
+                    HasReplies = hasReplies,
+                    Author = comment.data.author,
+                    Ups = comment.data.ups,
+                    Created = Helpers.GetElapsedTime(comment.data.created_utc)
                 };
                 TreeNode parent = new TreeNode()
                 {
@@ -65,7 +68,10 @@ namespace DashForReddit.Pages
                     var childComment = new Comment()
                     {
                         Body = child.data.body,
-                        HasReplies = hasReplies
+                        HasReplies = hasReplies,
+                        Author = child.data.author,
+                        Ups = child.data.ups,
+                        Created = Helpers.GetElapsedTime(comment.data.created_utc)
                     };
                     var childNode = new TreeNode()
                     {

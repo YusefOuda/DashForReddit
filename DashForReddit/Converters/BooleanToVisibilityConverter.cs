@@ -2,7 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-namespace DashForReddit
+namespace DashForReddit.Converters
 {
     class BooleanToVisibilityConverter : IValueConverter
     {

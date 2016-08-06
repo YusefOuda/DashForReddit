@@ -16,12 +16,22 @@
         </Grid.RowDefinitions>
         <RelativePanel>
             <Button Name="HamburgerButton" Width="50" Click="HamburgerButton_Click" FontFamily="Segoe MDL2 Assets" FontSize="18" Content="&#xE700;" HorizontalAlignment="Left" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" VerticalAlignment="Stretch"></Button>
-            <ComboBox Name="SortComboBox" RelativePanel.LeftOf="SearchBox" RelativePanel.AlignVerticalCenterWith="SearchBox" Width="150" SelectionChanged="SortComboBox_SelectionChanged">
+            <ComboBox Name="SortComboBox" RelativePanel.LeftOf="SearchBox" RelativePanel.AlignVerticalCenterWith="SearchBox" Width="155" SelectionChanged="SortComboBox_SelectionChanged">
                 <ComboBoxItem Name="Hot" Content="Hot" IsSelected="True"></ComboBoxItem>
                 <ComboBoxItem Name="New" Content="New"></ComboBoxItem>
                 <ComboBoxItem Name="Rising" Content="Rising"></ComboBoxItem>
-                <ComboBoxItem Name="Controversial" Content="Controversial"></ComboBoxItem>
-                <ComboBoxItem Name="Top" Content="Top"></ComboBoxItem>
+                <ComboBoxItem Name="Controversial_hour" Content="Controversial - Past Hour"></ComboBoxItem>
+                <ComboBoxItem Name="Controversial_day" Content="Controversial - Past Day"></ComboBoxItem>
+                <ComboBoxItem Name="Controversial_week" Content="Controversial - Past Week"></ComboBoxItem>
+                <ComboBoxItem Name="Controversial_month" Content="Controversial - Past Month"></ComboBoxItem>
+                <ComboBoxItem Name="Controversial_year" Content="Controversial - Past Year"></ComboBoxItem>
+                <ComboBoxItem Name="Controversial_all" Content="Controversial - All Time"></ComboBoxItem>
+                <ComboBoxItem Name="Top_hour" Content="Top - Past Hour"></ComboBoxItem>
+                <ComboBoxItem Name="Top_day" Content="Top - Past Day"></ComboBoxItem>
+                <ComboBoxItem Name="Top_week" Content="Top - Past Week"></ComboBoxItem>
+                <ComboBoxItem Name="Top_month" Content="Top - Past Month"></ComboBoxItem>
+                <ComboBoxItem Name="Top_year" Content="Top - Past Year"></ComboBoxItem>
+                <ComboBoxItem Name="Top_all" Content="Top - All Time"></ComboBoxItem>
             </ComboBox>
             <AutoSuggestBox Name="SearchBox" PlaceholderText="Search" RelativePanel.AlignRightWithPanel="True" Width="200" QueryIcon="Find" VerticalAlignment="Top" Margin="10,10"></AutoSuggestBox>
         </RelativePanel>
