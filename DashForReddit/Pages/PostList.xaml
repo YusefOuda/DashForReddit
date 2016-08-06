@@ -24,7 +24,7 @@
                         <TextBlock Text="{x:Bind Title}" FontSize="16" TextWrapping="Wrap"></TextBlock>
                         <RelativePanel>
                             <TextBlock Name="Author" Text="{x:Bind Author}" FontSize="12"></TextBlock>
-                            <TextBlock Name="Subreddit" Text="{x:Bind Subreddit}" FontSize="12" RelativePanel.RightOf="Author" Margin="20,0,0,0"></TextBlock>
+                            <TextBlock Name="Subreddit" Text="{x:Bind Subreddit}" FontSize="12" RelativePanel.RightOf="Author" Margin="20,0,0,0" FontWeight="Medium"></TextBlock>
                             <TextBlock Text="{x:Bind Created}" FontSize="12" RelativePanel.RightOf="Subreddit" Margin="20,0,0,0"></TextBlock>
                             <TextBlock Text="{x:Bind Ups}" FontSize="12" RelativePanel.AlignRightWithPanel="True" Margin="0,0,20,0"></TextBlock>
                         </RelativePanel>

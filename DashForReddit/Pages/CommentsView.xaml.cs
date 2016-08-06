@@ -43,7 +43,7 @@ namespace DashForReddit.Pages
                     Body = comment.data.body,
                     HasReplies = hasReplies,
                     Author = comment.data.author,
-                    Ups = comment.data.ups,
+                    Ups = $"{comment.data.ups} points",
                     Created = Helpers.GetElapsedTime(comment.data.created_utc)
                 };
                 TreeNode parent = new TreeNode()
@@ -70,7 +70,7 @@ namespace DashForReddit.Pages
                         Body = child.data.body,
                         HasReplies = hasReplies,
                         Author = child.data.author,
-                        Ups = child.data.ups,
+                        Ups = $"{child.data.ups} points",
                         Created = Helpers.GetElapsedTime(comment.data.created_utc)
                     };
                     var childNode = new TreeNode()

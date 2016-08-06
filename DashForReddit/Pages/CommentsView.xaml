@@ -22,8 +22,13 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBlock Name="AuthorText" Text="{Binding Data.Author}" FontSize="12" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWith="BodyBorder" Margin="5,0,0,5"></TextBlock>
-                        <TextBlock Name="CreatedText" Text="{Binding Data.Created}" FontSize="12" RelativePanel.RightOf="AuthorText" RelativePanel.AlignVerticalCenterWith="AuthorText" Margin="5,0,0,5"></TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Name="AuthorText" Text="{Binding Data.Author}" FontSize="12" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWith="BodyBorder" Margin="5,0,0,5"></TextBlock>
+                            <TextBlock Text="|" FontSize="12" RelativePanel.AlignTopWithPanel="True" RelativePanel.RightOf="AuthorText" Margin="5,0,0,5"></TextBlock>
+                            <TextBlock Name="CreatedText" Text="{Binding Data.Created}" FontSize="12" RelativePanel.RightOf="AuthorText" RelativePanel.AlignVerticalCenterWith="AuthorText" Margin="5,0,0,5"></TextBlock>
+                            <TextBlock Text="|" FontSize="12" RelativePanel.AlignTopWithPanel="True" RelativePanel.RightOf="CreatedText" Margin="5,0,0,5"></TextBlock>
+                            <TextBlock Name="UpsText" Text="{Binding Data.Ups}" FontSize="12" RelativePanel.RightOf="CreatedText" RelativePanel.AlignVerticalCenterWith="AuthorText" Margin="5,0,0,5"></TextBlock>
+                        </StackPanel>
                         <TextBlock Grid.Row="1" Name="BodyText" Padding="5,0,0,0" Text="{Binding Data.Body}" TextWrapping="Wrap" Style="{ThemeResource BodyTextBlockStyle}" FontSize="14"/>
                      </Grid>
                 </Border>
