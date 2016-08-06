@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Data;
 
-namespace DashForReddit
+namespace DashForReddit.Converters
 {
     public sealed class GlyphConverter : IValueConverter
     {

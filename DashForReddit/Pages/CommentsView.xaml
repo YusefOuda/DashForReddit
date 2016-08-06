@@ -23,6 +23,7 @@
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <TextBlock Name="AuthorText" Text="{Binding Data.Author}" FontSize="12" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWith="BodyBorder" Margin="5,0,0,5"></TextBlock>
+                        <TextBlock Name="CreatedText" Text="{Binding Data.Created}" FontSize="12" RelativePanel.RightOf="AuthorText" RelativePanel.AlignVerticalCenterWith="AuthorText" Margin="5,0,0,5"></TextBlock>
                         <TextBlock Grid.Row="1" Name="BodyText" Padding="5,0,0,0" Text="{Binding Data.Body}" TextWrapping="Wrap" Style="{ThemeResource BodyTextBlockStyle}" FontSize="14"/>
                      </Grid>
                 </Border>
@@ -48,12 +49,18 @@
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Top"
                       ItemTemplate="{StaticResource TreeViewItemDataTemplate}"
-                      ReorderMode="Disabled">
+                      ReorderMode="Disabled"
+                      CanReorderItems="False">
                 <tvs:TreeView.Resources>
                     <Style TargetType="tvs:TreeViewItem">
                         <Setter Property="BorderBrush" Value="Black"></Setter>
                         <Setter Property="BorderThickness" Value="0"></Setter>
                         <Setter Property="Padding" Value="5"></Setter>
+                        <Setter Property="CanDrag" Value="False"></Setter>
+                    </Style>
+                    <Style TargetType="tvs:TreeView">
+                        <Setter Property="CanDrag" Value="False"></Setter>
+                        <Setter Property="CanDragItems" Value="False"></Setter>
                     </Style>
                 </tvs:TreeView.Resources>
                 <tvs:TreeView.ItemContainerTransitions>

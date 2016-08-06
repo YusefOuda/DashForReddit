@@ -99,7 +99,7 @@
     </Compile>
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\IntegerToBrushConverter.cs" />
-    <Compile Include="GlyphConverter.cs" />
+    <Compile Include="Converters\GlyphConverter.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Pages\CommentsView.xaml.cs">
       <DependentUpon>CommentsView.xaml</DependentUpon>
