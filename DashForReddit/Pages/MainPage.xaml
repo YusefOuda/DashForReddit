@@ -15,7 +15,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <RelativePanel>
-            <Button Name="HamburgerButton" Width="50" Click="HamburgerButton_Click" FontFamily="Segoe MDL2 Assets" FontSize="18" Content="&#xE700;" HorizontalAlignment="Left" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" VerticalAlignment="Stretch"></Button>
+            <Button Name="HamburgerButton" Width="200" Click="HamburgerButton_Click" FontFamily="Segoe MDL2 Assets" FontSize="18" Content="&#xE700;" HorizontalAlignment="Left" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" VerticalAlignment="Stretch"></Button>
             <ComboBox Name="SortComboBox" RelativePanel.LeftOf="SearchBox" RelativePanel.AlignVerticalCenterWith="SearchBox" Width="155" SelectionChanged="SortComboBox_SelectionChanged">
                 <ComboBoxItem Name="Hot" Content="Hot" IsSelected="True"></ComboBoxItem>
                 <ComboBoxItem Name="New" Content="New"></ComboBoxItem>

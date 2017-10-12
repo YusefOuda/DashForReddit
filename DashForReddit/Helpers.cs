@@ -33,5 +33,14 @@ namespace DashForReddit
 
             return result;
         }
+
+        public static string GetPluralality(int num, string text)
+        {
+            if (num != 1)
+            {
+                text = $"{text}s";
+            }
+            return text;
+        }
     }
 }

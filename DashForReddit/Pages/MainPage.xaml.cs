@@ -43,6 +43,7 @@ namespace DashForReddit
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
         {
             NavPane.IsPaneOpen = !NavPane.IsPaneOpen;
+            HamburgerButton.Width = NavPane.IsPaneOpen? NavPane.OpenPaneLength : NavPane.CompactPaneLength;
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)

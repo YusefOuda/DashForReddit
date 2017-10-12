@@ -154,7 +154,8 @@ namespace DashForReddit.Reddit
                     {
                         Title = post.data.title,
                         Author = post.data.author,
-                        Ups = post.data.ups,
+                        Points = post.data.ups,
+                        Comments = post.data.num_comments,
                         Subreddit = $"/r/{post.data.subreddit}",
                         Name = post.data.name,
                         URL = post.data.url,

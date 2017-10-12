@@ -10,13 +10,30 @@ namespace DashForReddit.ViewModels
     {
         public string Title { get; set; }
         public string Author { get; set; }
-        public int Ups { get; set; }
+        public int Points { get; set; }
+        public int Comments { get; set; }
         public string Subreddit { get; set; }
         public string Name { get; set; }
         public string URL { get; set; }
         public string Permalink { get; set; }
         public string Created { get; set; }
         public string Thumbnail { get; set; }
+
+        public string CommentsText
+        {
+            get
+            {
+                return $"{Comments} {Helpers.GetPluralality(Comments, "comment")}";
+            }
+        }
+
+        public string PointsText
+        {
+            get
+            {
+                return $"{Points} {Helpers.GetPluralality(Points, "point")}";
+            }
+        }
     }
 
     public class Subreddit : IComparable
