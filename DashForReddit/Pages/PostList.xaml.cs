@@ -38,7 +38,10 @@ namespace DashForReddit
         private void PostListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var post = (ViewModels.Post)e.ClickedItem;
-            //Frame.Navigate(typeof(PostDetail), post.URL);
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            var mainSubTextBlock = page.FindName("Subreddit") as TextBlock;
+            mainSubTextBlock.Text = post.Subreddit;
             Frame.Navigate(typeof(CommentsView), post.Permalink);
         }
 
