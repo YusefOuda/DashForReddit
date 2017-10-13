@@ -20,6 +20,7 @@ using DashForReddit.Pages;
 using Windows.UI.Xaml.Navigation;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -38,13 +39,13 @@ namespace DashForReddit
             this.InitializeComponent();
             Subreddits = new ObservableCollection<Subreddit>();
             Settings = new ObservableCollection<SettingNav>();
-            Subreddit.Text = "/r/all";
+            Subreddit.Text = "frontpage";
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
         {
             NavPane.IsPaneOpen = !NavPane.IsPaneOpen;
-            HamburgerButton.Width = NavPane.IsPaneOpen? NavPane.OpenPaneLength : NavPane.CompactPaneLength;
+            HamburgerButton.Width = NavPane.IsPaneOpen ? NavPane.OpenPaneLength : NavPane.CompactPaneLength;
         }
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
@@ -85,8 +86,10 @@ namespace DashForReddit
         {
             var clicked = e.ClickedItem as Subreddit;
             Subreddit.Text = clicked.DisplayName;
-            dynamic param = new {
-                sub = clicked.Name ?? "",
+            var sub = clicked.Name == "Frontpage" ? "" : clicked.Name ?? "";
+            dynamic param = new
+            {
+                sub = sub,
                 sort = ((ComboBoxItem)(SortComboBox.SelectedItem)).Name.ToLower()
             };
             ContentFrame.Navigate(typeof(PostList), param);

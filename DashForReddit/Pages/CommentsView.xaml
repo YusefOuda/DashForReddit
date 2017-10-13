@@ -45,7 +45,7 @@
             </Grid.RowDefinitions>
             <RelativePanel>
                 <TextBlock HorizontalAlignment="Left" Name="PostTitle" FontSize="24" TextWrapping="WrapWholeWords" Margin="0,0,0,15"></TextBlock>
-                <TextBlock RelativePanel.Below="PostTitle" RelativePanel.AlignLeftWith="PostTitle" Name="PostBody" FontSize="16" TextWrapping="WrapWholeWords" Margin="0,0,0,15"></TextBlock>
+                <controls:MarkdownTextBlock RelativePanel.Below="PostTitle" RelativePanel.AlignLeftWith="PostTitle" Name="PostBody" FontSize="16" TextWrapping="WrapWholeWords" Margin="0,0,0,15"></controls:MarkdownTextBlock>
             </RelativePanel>
             <tvs:TreeView x:Name="commentTreeView" 
                       Grid.Row="1"

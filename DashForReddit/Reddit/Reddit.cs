@@ -182,14 +182,6 @@ namespace DashForReddit.Reddit
             if (isLoggedIn)
             {
                 var x = await ensureTokenExists();
-                if (string.IsNullOrWhiteSpace(after))
-                {
-                    subs.Add(new Subreddit()
-                    {
-                        Name = "All",
-                        DisplayName = "/r/all"
-                    });
-                }
                 string url = $"{base_url}/subreddits/mine/subscriber";
                 if (!string.IsNullOrWhiteSpace(after))
                     url = $"{url}?after={after}";
@@ -215,6 +207,20 @@ namespace DashForReddit.Reddit
                     subs.Sort();
                     if (!string.IsNullOrWhiteSpace(postsResponse.data.after))
                         getListOfSubs(subs, postsResponse.data.after, false);
+                    else
+                    {
+                        subs.Sort();
+                        subs.Insert(0, new Subreddit()
+                        {
+                            Name = "All",
+                            DisplayName = "/r/all"
+                        });
+                        subs.Insert(0, new Subreddit()
+                        {
+                            Name = "Frontpage",
+                            DisplayName = "frontpage"
+                        });
+                    }
                 }
             }
             else
@@ -225,6 +231,11 @@ namespace DashForReddit.Reddit
 
         private static void getDefaultSubs(ObservableCollection<Subreddit> subs)
         {
+            subs.Add(new Subreddit()
+            {
+                Name = "Popular",
+                DisplayName = "/r/all"
+            });
             subs.Add(new Subreddit()
             {
                 Name = "All",

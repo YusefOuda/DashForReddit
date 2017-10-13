@@ -21,7 +21,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="vm:Post">
                     <RelativePanel>
-                        <Image Name="Thumbnail" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Source="{x:Bind Thumbnail}" Width="75" Height="75" Margin="5"></Image>
+                        <Image Name="Thumbnail" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Source="{x:Bind Thumbnail}" Width="75" Height="75" Stretch="UniformToFill" Margin="5"></Image>
                         <StackPanel RelativePanel.RightOf="Thumbnail" RelativePanel.AlignVerticalCenterWith="Thumbnail" RelativePanel.AlignRightWithPanel="True" Margin="0,5,0,5">
                             <TextBlock Text="{x:Bind Title}" FontSize="16" TextWrapping="Wrap"></TextBlock>
                             <RelativePanel>
