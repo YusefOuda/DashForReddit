@@ -38,6 +38,7 @@ namespace DashForReddit
             this.InitializeComponent();
             Subreddits = new ObservableCollection<Subreddit>();
             Settings = new ObservableCollection<SettingNav>();
+            Subreddit.Text = "/r/all";
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
@@ -83,6 +84,7 @@ namespace DashForReddit
         private void NavListView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var clicked = e.ClickedItem as Subreddit;
+            Subreddit.Text = clicked.DisplayName;
             dynamic param = new {
                 sub = clicked.Name ?? "",
                 sort = ((ComboBoxItem)(SortComboBox.SelectedItem)).Name.ToLower()

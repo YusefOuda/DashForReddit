@@ -16,6 +16,7 @@
         </Grid.RowDefinitions>
         <RelativePanel>
             <Button Name="HamburgerButton" Width="200" Click="HamburgerButton_Click" FontFamily="Segoe MDL2 Assets" FontSize="18" Content="&#xE700;" HorizontalAlignment="Left" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignTopWithPanel="True" VerticalAlignment="Stretch"></Button>
+            <TextBlock Name="Subreddit" FontSize="24" FontWeight="Medium" RelativePanel.AlignVerticalCenterWith="HamburgerButton" RelativePanel.RightOf="HamburgerButton" VerticalAlignment="Center" Margin="10,0,0,0"></TextBlock>
             <ComboBox Name="SortComboBox" RelativePanel.LeftOf="SearchBox" RelativePanel.AlignVerticalCenterWith="SearchBox" Width="155" SelectionChanged="SortComboBox_SelectionChanged">
                 <ComboBoxItem Name="Hot" Content="Hot" IsSelected="True"></ComboBoxItem>
                 <ComboBoxItem Name="New" Content="New"></ComboBoxItem>

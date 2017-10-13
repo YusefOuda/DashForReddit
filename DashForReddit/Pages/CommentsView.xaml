@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tvs="using:TreeViewControl"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -29,8 +30,8 @@
                             <TextBlock Text="|" FontSize="12" RelativePanel.AlignTopWithPanel="True" RelativePanel.RightOf="CreatedText" Margin="5,0,0,5"></TextBlock>
                             <TextBlock Name="UpsText" Text="{Binding Data.Ups}" FontSize="12" RelativePanel.RightOf="CreatedText" RelativePanel.AlignVerticalCenterWith="AuthorText" Margin="5,0,0,5"></TextBlock>
                         </StackPanel>
-                        <TextBlock Grid.Row="1" Name="BodyText" Padding="5,0,0,0" Text="{Binding Data.Body}" TextWrapping="Wrap" Style="{ThemeResource BodyTextBlockStyle}" FontSize="14"/>
-                     </Grid>
+                        <controls:MarkdownTextBlock Grid.Row="1" Name="BodyText" Padding="5,0,0,0" Text="{Binding Data.Body}" TextWrapping="Wrap" FontSize="14" LinkClicked="BodyText_LinkClicked"></controls:MarkdownTextBlock>
+                    </Grid>
                 </Border>
             </RelativePanel>
         </DataTemplate>

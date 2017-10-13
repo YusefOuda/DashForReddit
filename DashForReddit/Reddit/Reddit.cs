@@ -160,7 +160,7 @@ namespace DashForReddit.Reddit
                         Name = post.data.name,
                         URL = post.data.url,
                         Permalink = post.data.permalink,
-                        Created = Helpers.GetElapsedTime(post.data.created_utc)//String.Format("{0:F}", DateTimeOffset.FromUnixTimeSeconds(post.data.created_utc).DateTime)
+                        Created = Helpers.GetElapsedTime(post.data.created_utc)
                     };
 
                     Uri thumbnail;
@@ -168,7 +168,7 @@ namespace DashForReddit.Reddit
                     if (thumbnail != null && thumbnail.IsAbsoluteUri)
                         postVM.Thumbnail = post.data.thumbnail;
                     else
-                        postVM.Thumbnail = "Assets/placeholder.png";
+                        postVM.Thumbnail = "/Assets/icon.svg";
 
                     posts.Add(postVM);
                 }

@@ -20,16 +20,19 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="vm:Post">
-                    <StackPanel Margin="0,5,0,5">
-                        <TextBlock Text="{x:Bind Title}" FontSize="16" TextWrapping="Wrap"></TextBlock>
-                        <RelativePanel>
-                            <TextBlock Name="Author" Text="{x:Bind Author}" FontSize="12"></TextBlock>
-                            <TextBlock Name="Subreddit" Text="{x:Bind Subreddit}" FontSize="12" RelativePanel.RightOf="Author" Margin="20,0,0,0" FontWeight="Medium"></TextBlock>
-                            <TextBlock Name="Created" Text="{x:Bind Created}" FontSize="12" RelativePanel.RightOf="Subreddit" Margin="20,0,0,0"></TextBlock>
-                            <TextBlock Name="Points" Text="{x:Bind PointsText}" FontSize="12" RelativePanel.LeftOf="Comments" Margin="0,0,20,0"></TextBlock>
-                            <TextBlock Name="Comments" Text="{x:Bind CommentsText}" FontSize="12" RelativePanel.AlignRightWithPanel="True" Margin="0,0,20,0"></TextBlock>
-                        </RelativePanel>
-                    </StackPanel>
+                    <RelativePanel>
+                        <Image Name="Thumbnail" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Source="{x:Bind Thumbnail}" Width="50" Height="50" Margin="5"></Image>
+                        <StackPanel RelativePanel.RightOf="Thumbnail" RelativePanel.AlignVerticalCenterWith="Thumbnail" RelativePanel.AlignRightWithPanel="True" Margin="0,5,0,5">
+                            <TextBlock Text="{x:Bind Title}" FontSize="16" TextWrapping="Wrap"></TextBlock>
+                            <RelativePanel>
+                                <TextBlock Name="Author" Text="{x:Bind Author}" FontSize="12"></TextBlock>
+                                <TextBlock Name="Subreddit" Text="{x:Bind Subreddit}" FontSize="12" RelativePanel.RightOf="Author" Margin="20,0,0,0" FontWeight="Medium"></TextBlock>
+                                <TextBlock Name="Created" Text="{x:Bind Created}" FontSize="12" RelativePanel.RightOf="Subreddit" Margin="20,0,0,0"></TextBlock>
+                                <TextBlock Name="Points" Text="{x:Bind PointsText}" FontSize="12" RelativePanel.LeftOf="Comments" Margin="0,0,20,0"></TextBlock>
+                                <TextBlock Name="Comments" Text="{x:Bind CommentsText}" FontSize="12" RelativePanel.AlignRightWithPanel="True" Margin="0,0,20,0"></TextBlock>
+                            </RelativePanel>
+                        </StackPanel>
+                    </RelativePanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

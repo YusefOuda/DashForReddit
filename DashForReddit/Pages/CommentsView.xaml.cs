@@ -1,6 +1,7 @@
 ﻿using DashForReddit.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -83,6 +84,12 @@ namespace DashForReddit.Pages
                     parent.Add(childNode);
                 }
             }
+        }
+
+        private void BodyText_LinkClicked(object sender, Microsoft.Toolkit.Uwp.UI.Controls.LinkClickedEventArgs e)
+        {
+            // TODO: open link
+            Debug.WriteLine(e.Link);
         }
     }
 }
