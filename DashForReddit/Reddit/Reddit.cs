@@ -168,7 +168,7 @@ namespace DashForReddit.Reddit
                     if (thumbnail != null && thumbnail.IsAbsoluteUri)
                         postVM.Thumbnail = post.data.thumbnail;
                     else
-                        postVM.Thumbnail = "/Assets/icon.svg";
+                        postVM.Thumbnail = "ms-appx:///Assets/icon.png";
 
                     posts.Add(postVM);
                 }
