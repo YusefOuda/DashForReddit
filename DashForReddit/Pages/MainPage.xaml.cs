@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -97,12 +98,22 @@ namespace DashForReddit
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            SystemNavigationManager.GetForCurrentView().BackRequested += MainPage_BackRequested;
             if (e.Parameter is Uri)
             {
                 var uri = e.Parameter as Uri;
                 var paramResult = GetParams(uri.AbsoluteUri);
                 await Reddit.Reddit.getDurableToken(paramResult["code"]);
                 UpdateNavList(true);
+            }
+        }
+
+        private void MainPage_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (ContentFrame.CanGoBack)
+            {
+                ContentFrame.GoBack();
             }
         }
 

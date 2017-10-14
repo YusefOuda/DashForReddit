@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -61,6 +62,10 @@ namespace DashForReddit
             var param = e.Parameter as dynamic;
             this.subreddit = param.sub;
             this.sort = param.sort;
+            var frame = (Frame)Window.Current.Content;
+            var page = (MainPage)frame.Content;
+            var mainSubTextBlock = page.FindName("Subreddit") as TextBlock;
+            mainSubTextBlock.Text = string.IsNullOrEmpty(param.sub) ? "frontpage" : $"/r/{param.sub}";
             Reddit.Reddit.getPosts(Posts, null, subreddit, true, sort);
         }
     }

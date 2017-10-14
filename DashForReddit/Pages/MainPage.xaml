@@ -8,7 +8,7 @@
     Loaded="Page_Loaded"
     xmlns:vm="using:DashForReddit.ViewModels"
     mc:Ignorable="d">
-    
+
     <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
